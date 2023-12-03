@@ -6,7 +6,7 @@ import socksBlueImage from './assets/images/socks_blue.jpeg'
 const product = ref('Socks')
 const image = ref(socksGreenImage)
 const popularItem = ref(true)
-const inventory = ref(8)
+const inventory = ref(0)
 
 const details = ref(['50% cotton', '30% wool', '20% polyester'])
 const variants = ref([
@@ -52,16 +52,46 @@ const updateImage = (variantImage) => {
             v-for="variant in variants"
             v-bind:key="variant.id"
             @mouseover="updateImage(variant.image)"
+            class="color-circle"
+            :style="{ backgroundColor: variant.color }"
         >
-          {{ variant.color }}
         </div>
 
         <!-- v-on:click takes a callback function, similar to React: (event) => {cart += 1} -->
         <!-- however the Function Wrapper is optional as it'll be added automatically by the compiler-->
         <!-- or pass in the function directly -->
         <!-- v-on:click.once or @click.once: the once is a event modifier that ensures the event is triggered only once -->
-        <button class="button" v-on:click.once="cart += 1">Add to Cart</button>
+        <button
+            class="button"
+            :class="{ disabledButton: inventory <= 0}"
+            v-on:click.once="cart += 1"
+            :disabled="inventory <= 0"
+        >
+          Add to Cart
+        </button>
+
+
+        <!--class binding can use an array instead as well-->
+        <!-- where the values could be css classes:
+          const color = 'text-dark'
+          const bgColor = 'bg-white'
+        -->
+        <button
+            class="button"
+            :class="[color, bgColor, 'border-dark']"
+        >
+          Add to Wishlist
+        </button>
       </div>
     </div>
   </div>
 </template>
+
+
+<!-- The scoped attribute will indicate the style will not affect child components EXCEPT for the ROOT ELEMENT of a child component-->
+<style scoped>
+p {
+  color: midnightblue;
+  font-weight: bold;
+}
+</style>
