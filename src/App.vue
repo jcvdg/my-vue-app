@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import socksGreenImage from './assets/images/socks_green.jpeg'
+import socksBlueImage from './assets/images/socks_blue.jpeg'
 
 const product = ref('Socks')
 const image = ref(socksGreenImage)
@@ -9,12 +10,20 @@ const inventory = ref(8)
 
 const details = ref(['50% cotton', '30% wool', '20% polyester'])
 const variants = ref([
-  { id: 2234, color: 'green' },
-  { id: 2235, color: 'blue' }
+  { id: 2234, color: 'green', image: socksGreenImage },
+  { id: 2235, color: 'blue', image: socksBlueImage }
 ])
+
+const cart = ref(0)
+
+const updateImage = (variantImage) => {
+  image.value = variantImage
+}
 </script>
 
 <template>
+  <div class="nav-bar"></div>
+  <div class="cart">Cart({{ cart }})</div>
   <div class="product-display">
     <div class="product-container">
       <div class="product-image">
@@ -39,7 +48,19 @@ const variants = ref([
 
         <!-- v-for and v-if can appear on the same element, however v-if is always processed first regardless of order-->
         <!-- Vue also relies on the virtual DOM similar to React so the key is required -->
-        <div v-for="variant in variants" v-bind:key="variant.id">{{ variant.color }}</div>
+        <div
+            v-for="variant in variants"
+            v-bind:key="variant.id"
+            @mouseover="updateImage(variant.image)"
+        >
+          {{ variant.color }}
+        </div>
+
+        <!-- v-on:click takes a callback function, similar to React: (event) => {cart += 1} -->
+        <!-- however the Function Wrapper is optional as it'll be added automatically by the compiler-->
+        <!-- or pass in the function directly -->
+        <!-- v-on:click.once or @click.once: the once is a event modifier that ensures the event is triggered only once -->
+        <button class="button" v-on:click.once="cart += 1">Add to Cart</button>
       </div>
     </div>
   </div>
