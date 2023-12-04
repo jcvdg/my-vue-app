@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 import socksGreenImage from './assets/images/socks_green.jpeg'
 import socksBlueImage from './assets/images/socks_blue.jpeg'
 
 const product = ref('Socks')
+const brand = ref('Vue Mastery')
 const image = ref(socksGreenImage)
 const popularItem = ref(true)
 const inventory = ref(0)
@@ -15,6 +16,13 @@ const variants = ref([
 ])
 
 const cart = ref(0)
+
+// Example of Explicit Subscriber
+// the return value is the value of the computed property
+// whenever brand or product value changes, the value of title will be recalculated automatically
+const title = computed(() => {
+  return brand.value + ' ' + product.value
+})
 
 const updateImage = (variantImage) => {
   image.value = variantImage
@@ -30,7 +38,8 @@ const updateImage = (variantImage) => {
         <img v-bind:src="image">
       </div>
       <div class="product-info">
-        <h1>{{ product }}</h1>
+        <!-- don't need to use .value in templating, just inside the <script> block -->
+        <h1>{{ title }}</h1>
 
         <!-- Conditional Rendering -->
         <!-- v-show is similar to v-if but renders and hides using display:none, so more performant if the code needs to appear and hide frequently-->
