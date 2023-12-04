@@ -5,14 +5,13 @@ import socksBlueImage from './assets/images/socks_blue.jpeg'
 
 const product = ref('Socks')
 const brand = ref('Vue Mastery')
-const image = ref(socksGreenImage)
 const popularItem = ref(true)
-const inventory = ref(0)
+const selectedVariant = ref(0)
 
 const details = ref(['50% cotton', '30% wool', '20% polyester'])
 const variants = ref([
-  { id: 2234, color: 'green', image: socksGreenImage },
-  { id: 2235, color: 'blue', image: socksBlueImage }
+  { id: 2234, color: 'green', image: socksGreenImage, quantity: 50 },
+  { id: 2235, color: 'blue', image: socksBlueImage, quantity: 0 }
 ])
 
 const cart = ref(0)
@@ -24,8 +23,21 @@ const title = computed(() => {
   return brand.value + ' ' + product.value
 })
 
-const updateImage = (variantImage) => {
-  image.value = variantImage
+const image = computed(() => {
+  return variants.value[selectedVariant.value].image
+})
+
+const inStock = computed(() => {
+  return variants.value[selectedVariant.value].quantity > 10
+})
+const almostOutOfStock = computed(() => {
+  return variants.value[selectedVariant.value].quantity < 10 && variants.value[selectedVariant.value].quantity > 0
+})
+
+
+
+const updateVariant = (index) => {
+  selectedVariant.value = index
 }
 </script>
 
@@ -46,8 +58,8 @@ const updateImage = (variantImage) => {
         <p v-show="popularItem">Popular Item!</p>
 
         <!-- v-if and v-else needs to be used on elements next to each other -->
-        <p v-if="inventory > 10">In Stock</p>
-        <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+        <p v-if="inStock">In Stock</p>
+        <p v-else-if="almostOutOfStock">Almost sold out!</p>
         <p v-else>Out of Stock</p>
 
         <ul>
@@ -58,9 +70,9 @@ const updateImage = (variantImage) => {
         <!-- v-for and v-if can appear on the same element, however v-if is always processed first regardless of order-->
         <!-- Vue also relies on the virtual DOM similar to React so the key is required -->
         <div
-            v-for="variant in variants"
+            v-for="(variant, index) in variants"
             v-bind:key="variant.id"
-            @mouseover="updateImage(variant.image)"
+            @mouseover="updateVariant(index)"
             class="color-circle"
             :style="{ backgroundColor: variant.color }"
         >
