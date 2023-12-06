@@ -5,6 +5,7 @@ import socksBlueImage from '@/assets/images/socks_blue.jpeg'
 import socksGreenImage from '../assets/images/socks_green.jpeg'
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewList from "@/components/ReviewList.vue";
+import ProductDetails from "@/components/ProductDetails.vue";
 
 // props passed from the parent component
 // this is a Compiler Macro, meaning we don't need to import it as it's not a runtime function
@@ -38,6 +39,7 @@ const selectedVariant = ref(0)
 const reviews = ref([])
 
 const details = ref(['50% cotton', '30% wool', '20% polyester'])
+const description = ref('Beautifully soft socks that\'ll make everyone envious.')
 const variants = ref([
   { id: 2234, color: 'green', image: socksGreenImage, quantity: 50 },
   { id: 2235, color: 'blue', image: socksBlueImage, quantity: 0 }
@@ -109,14 +111,25 @@ const addReview = (review) => {
 
         <!-- v-for and v-if can appear on the same element, however v-if is always processed first regardless of order-->
         <!-- Vue also relies on the virtual DOM similar to React so the key is required -->
-        <div
-            v-for="(variant, index) in variants"
-            v-bind:key="variant.id"
-            @mouseover="updateVariant(index)"
-            class="color-circle"
-            :style="{ backgroundColor: variant.color }"
-        >
+        <div class="color-select-container">
+          <div
+              v-for="(variant, index) in variants"
+              v-bind:key="variant.id"
+              @mouseover="updateVariant(index)"
+              class="color-circle"
+              :style="{ backgroundColor: variant.color }"
+          >
+          </div>
         </div>
+
+        <!-- Default Slot -->
+        <!--<ProductDetails :description="description">-->
+        <ProductDetails>
+          <template #default>
+            <h3>Product Description:</h3>
+            <p>{{ description }}</p>
+          </template>
+        </ProductDetails>
 
         <!-- v-on:click takes a callback function, similar to React: (event) => {cart += 1} -->
         <!-- however the Function Wrapper is optional as it'll be added automatically by the compiler -->
@@ -145,7 +158,18 @@ const addReview = (review) => {
           Add to Wishlist
         </button>
       </div>
+
+<!--      &lt;!&ndash; Default Slot &ndash;&gt;-->
+<!--        &lt;!&ndash;<ProductDetails :description="description">&ndash;&gt;-->
+<!--        <ProductDetails>-->
+<!--          <template #default>-->
+<!--            <h3>Product Description:</h3>-->
+<!--            <p>{{ description }}</p>-->
+<!--          </template>-->
+<!--        </ProductDetails>-->
+
     </div>
+
     <ReviewList :reviews="reviews" >
       <!-- the below named templates are optional -->
       <template #heading>
@@ -162,6 +186,7 @@ const addReview = (review) => {
     </ReviewList>
     <ReviewForm @review-submitted="addReview" />
   </div>
+
 </template>
 
 <style scoped>
