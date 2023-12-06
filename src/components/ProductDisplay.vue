@@ -146,7 +146,20 @@ const addReview = (review) => {
         </button>
       </div>
     </div>
-    <ReviewList :reviews="reviews" />
+    <ReviewList :reviews="reviews" >
+      <!-- the below named templates are optional -->
+      <template #heading>
+        <h3>Reviews:</h3>
+      </template>
+
+      <!--<template #item="slotProps">-->
+      <!-- alternatively in the destructuring syntax: -->
+      <template #item="{ review }">
+        <span>{{ review.name }} gave this {{ review.rating }}</span>
+        <br />
+        <span>{{ review.content }}</span>
+      </template>
+    </ReviewList>
     <ReviewForm @review-submitted="addReview" />
   </div>
 </template>
